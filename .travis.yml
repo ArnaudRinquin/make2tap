@@ -1,0 +1,9 @@
+language: node_js
+node_js:
+  - "4.2"
+  - "stable"
+addons:
+  code_climate:
+    repo_token: 3f287ed2ed77830d99264010e6a99b9b31b664c3b8f5575e17ddc55b15cee73d
+after_script:
+  - npm run report-coverage

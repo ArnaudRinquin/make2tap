@@ -1,0 +1,6 @@
+TAP version 13
+# Description
+ok 1 - test
+output
+ok 2 - test 2
+1..2

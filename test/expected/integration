@@ -1,0 +1,10 @@
+TAP version 13
+# Clean
+ok 1 - Clean dist
+cleaning /dist
+# Compile
+ok 2 - First step
+some output
+ok 3 - Second step
+other output
+1..3

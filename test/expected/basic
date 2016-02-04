@@ -1,0 +1,8 @@
+TAP version 13
+# Task one
+ok 1 - step 1-1
+ok 2 - step 1-2
+# Task two
+ok 3 - step 2-1
+ok 4 - step 2-2
+1..4
