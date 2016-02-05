@@ -1,6 +1,6 @@
 {
   "name": "make2tap",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Leverage TAP to transform your ugly make outputs into nice readable ones",
   "main": "index.js",
   "repository": {
