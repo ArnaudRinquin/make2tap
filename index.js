@@ -13,12 +13,20 @@ function isStep(line) {
   return line.startsWith('#');
 }
 
+function isError(line) {
+  return line.startsWith('make: ');
+}
+
 function processHeader(stream, line) {
   writeLine(stream, '# ' + line.slice(2).trim());
 }
 
-function processStep(stream, index, line) {
+function passingStep(stream, index, line) {
   writeLine(stream, 'ok ' + index + ' - ' + line.slice(1).trim());
+}
+
+function breakingStep(stream, index, line) {
+  writeLine(stream, 'not ok ' + index + ' - ' + line.slice(1).trim());
 }
 
 function processComment(stream, line) {
@@ -30,10 +38,30 @@ function writeLine(stream, line) {
   stream.push(line + '\n');
 }
 
+function processError(stream, line) {
+  writeLine(stream, line.slice(5).trim());
+}
+
 module.exports = function(){
 
   var initialised = false;
   var steps = 0;
+  var buf = [];
+  var previousStep;
+  var failed = false;
+
+
+  function emptyBuffer(stream) {
+    buf.forEach(processComment.bind(null, stream));
+    buf = [];
+  }
+
+  function validatePreviousStep(stream) {
+    if (previousStep) {
+      passingStep(stream, ++steps, previousStep);
+    }
+    emptyBuffer(stream)
+  }
 
   function convertLine(chunk, enc, callback) {
     var line = chunk.toString();
@@ -48,23 +76,40 @@ module.exports = function(){
       writeLine(this, 'TAP version 13')
     }
 
+    if (isError(line)) {
+      if (!failed) {
+        breakingStep(this, ++steps, previousStep);
+        previousStep = null;
+        emptyBuffer(this);
+      }
+      failed = true;
+      processError(this, line);
+      callback();
+      return;
+    }
+
     if (isHeader(line)) {
+      validatePreviousStep(this);
+      previousStep = null;
       processHeader(this, line);
       callback();
       return;
     }
 
     if (isStep(line)) {
-      processStep(this, ++steps, line);
+      validatePreviousStep(this);
+      previousStep = line;
       callback();
       return;
     }
 
-    processComment(this, line);
+    // comment line
+    buf.push(line);
     callback();
   }
 
   function finish(callback) {
+    validatePreviousStep(this);
     writeLine(this, '1..' + steps);
   }
 

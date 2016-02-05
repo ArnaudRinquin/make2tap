@@ -29,8 +29,10 @@ build:
 Then
 
 ```bash
-make clean compile | make2tap
+make clean compile 2>&1 | make2tap
 ```
+
+Note: `2>&1` is quite important here, it allows `make` stderr stream to be piped to `make2tap` as well so we can handle errors.
 
 Ouputs:
 

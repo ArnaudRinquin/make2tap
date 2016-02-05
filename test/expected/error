@@ -1,0 +1,8 @@
+TAP version 13
+# Failing task
+ok 1 - Try something that works
+that was easy
+not ok 2 - Trying something desperate
+thiswillbreak: No such file or directory
+*** [break] Error 1
+1..2

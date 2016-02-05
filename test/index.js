@@ -8,7 +8,7 @@ function getContent(testName) {
 }
 
 tap.test('make2tap CLI', function(test){
-  test.plan(3);
+  test.plan(4);
 
   test.test('Basic', function(test){
 
@@ -18,7 +18,7 @@ tap.test('make2tap CLI', function(test){
     }, function(error, stdout, stderr){
       test.equal(error, null);
       test.equal('', stderr);
-      test.equal(getContent('basic'), stdout);
+      test.equal(stdout, getContent('basic'));
     });
   });
 
@@ -30,19 +30,31 @@ tap.test('make2tap CLI', function(test){
     }, function(error, stdout, stderr){
       test.equal(error, null);
       test.equal('', stderr);
-      test.equal(getContent('comments'), stdout);
+      test.equal(stdout, getContent('comments'));
     });
   });
 
   test.test('Proper make integration', function(test){
 
     test.plan(3);
-    exec('make clean compile | ../bin.js', {
+    exec('make clean compile 2>&1 | ../bin.js', {
       cwd: __dirname
     }, function(error, stdout, stderr){
       test.equal(error, null);
       test.equal('', stderr);
-      test.equal(getContent('integration'), stdout);
+      test.equal(stdout, getContent('integration'));
+    });
+  });
+
+  test.test('Error handling', function(test){
+
+    test.plan(3);
+    exec('make break 2>&1 | ../bin.js', {
+      cwd: __dirname
+    }, function(error, stdout, stderr){
+      test.equal(error, null);
+      test.equal('', stderr);
+      test.equal(stdout, getContent('error'));
     });
   });
 });
