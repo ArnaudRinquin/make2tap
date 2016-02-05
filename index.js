@@ -111,6 +111,9 @@ module.exports = function(){
   function finish(callback) {
     validatePreviousStep(this);
     writeLine(this, '1..' + steps);
+    if (failed) {
+      process.exit(1);
+    }
   }
 
   return through2(convertLine, finish);
