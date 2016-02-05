@@ -1,2 +1,5 @@
 test
 images
+.nyc_output
+coverage
+.travis.yml
