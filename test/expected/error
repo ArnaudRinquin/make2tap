@@ -1,5 +1,8 @@
 TAP version 13
+# Successful task
+ok 1 - This works fine
+working
 # Failing task
-ok 1 - Try something that works
+ok 2 - Try something that works
 that was easy
-not ok 2 - Trying something desperate
+not ok 3 - Trying something desperate

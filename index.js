@@ -21,12 +21,8 @@ function processHeader(stream, line) {
   writeLine(stream, '# ' + line.slice(2).trim());
 }
 
-function passingStep(stream, index, line) {
-  writeLine(stream, 'ok ' + index + ' - ' + line.slice(1).trim());
-}
-
-function breakingStep(stream, index, line) {
-  writeLine(stream, 'not ok ' + index + ' - ' + line.slice(1).trim());
+function writeStep(stream, index, line, passing) {
+  writeLine(stream, (passing ? '': 'not ') + 'ok ' + index + ' - ' + line.slice(1).trim());
 }
 
 function processComment(stream, line) {
@@ -58,7 +54,7 @@ module.exports = function(){
 
   function validatePreviousStep(stream) {
     if (previousStep) {
-      passingStep(stream, ++steps, previousStep);
+      writeStep(stream, ++steps, previousStep, true);
     }
     emptyBuffer(stream)
   }
@@ -78,7 +74,9 @@ module.exports = function(){
 
     if (isError(line)) {
       if (!failed) {
-        breakingStep(this, ++steps, previousStep);
+        if (previousStep) {
+          writeStep(this, ++steps, previousStep, false);
+        }
         previousStep = null;
         emptyBuffer(this);
       }
